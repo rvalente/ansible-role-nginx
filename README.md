@@ -18,7 +18,10 @@ Gzip and SSL are default enabled, this configures SSL to have sane-secure defaul
 nginx_gzip_enabled: true
 nginx_ssl_enabled: true
 nginx_dhparam_keysize: 4096
+dns_servers: []
 ```
+
+`dns_servers` defaults to google public dns, these are used for SSL
 
 ### Debian
 

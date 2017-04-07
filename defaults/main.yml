@@ -1,2 +1,4 @@
 ---
-# defaults file for nginx
+dns_servers:
+  - 8.8.8.8
+  - 8.8.4.4

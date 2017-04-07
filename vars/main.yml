@@ -1,4 +1,5 @@
 ---
 nginx_gzip_enabled: true
-nginx_ssl_enabled: true
+nginx_ssl_enabled: false
 nginx_dhparam_keysize: 4096
+dns_servers: []
