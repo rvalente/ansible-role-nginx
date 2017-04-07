@@ -1,5 +1,7 @@
 # Nginx
 
+[![Build Status](https://travis-ci.org/rvalente/ansible-role-nginx.svg?branch=master)](https://travis-ci.org/rvalente/ansible-role-nginx)
+
 Install and configure Nginx Web Server.
 
 Right now, this sets up an Nginx server that is not listening anywhere. The idea behind this is that you setup/secure nginx for use, then a role that will leverage nginx will install the vhost and restart nginx using this handler.
