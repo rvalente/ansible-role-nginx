@@ -27,4 +27,5 @@ galaxy_info:
   galaxy_tags:
     - nginx
     - web
-dependencies: []
+dependencies:
+  - { role: rvalente.epel, when: ansible_os_family == 'RedHat' }

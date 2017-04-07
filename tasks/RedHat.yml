@@ -1,0 +1,26 @@
+---
+- name: install nginx
+  package:
+    name: nginx
+    state: present
+  become: true
+
+- name: configure nginx
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+  notify: restart nginx
+  become: true
+
+- name: Create DH parameters
+  command: "openssl dhparam {{ nginx_dhparam_keysize }} -out /etc/ssl/dhparam.pem"
+  args:
+    creates: /etc/ssl/dhparam.pem
+  when: nginx_ssl_enabled
+  become: true
+
+- name: start nginx
+  service:
+    name: nginx
+    state: started
+  become: true

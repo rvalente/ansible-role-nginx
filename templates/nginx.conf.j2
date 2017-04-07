@@ -1,0 +1,67 @@
+# {{ ansible_managed }}
+
+user {{ nginx_user }};
+worker_processes {{ nginx_worker_processes }};
+error_log {{ nginx_error_log }} {{ nginx_error_log_level }};
+pid {{ nginx_pid }};
+
+include /usr/share/nginx/modules/*.conf;
+
+events {
+  # Supported on Recent Linux (Kernel 2.6+)
+  use epoll;
+
+  # accept as many connections as possible
+  multi_accept on;
+
+  # max clients = worker_connections * worker_processes
+  worker_connections {{ nginx_worker_connections }};
+}
+
+http {
+  # Write access log, compress, and flush every 5m
+  access_log  {{ nginx_access_log }} {{ nginx_access_log_format }} gzip flush=5m;
+
+  sendfile            on;
+  tcp_nopush          on;
+  tcp_nodelay         on;
+  keepalive_timeout   65;
+  types_hash_max_size 2048;
+
+  include             /etc/nginx/mime.types;
+  default_type        application/octet-stream;
+
+{% if nginx_gzip_enabled %}
+  gzip on;
+  gzip_disable "MSIE [1-6]\.";
+  gzip_vary on;
+  gzip_proxied any;
+  gzip_comp_level 6;
+  gzip_buffers 16 8k;
+  gzip_http_version 1.1;
+  gzip_types text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript;
+{% endif %}
+
+{% if nginx_ssl_enabled %}
+  # Enable SSL
+  # https://cipherli.st/
+  # https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html
+  ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+  ssl_prefer_server_ciphers on;
+  ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";
+  ssl_dhparam /etc/ssl/dhparam.pem;
+  ssl_ecdh_curve secp384r1; # Requires nginx >= 1.1.0
+  ssl_session_cache shared:SSL:10m;
+  ssl_session_tickets off; # Requires nginx >= 1.5.9
+  ssl_stapling on; # Requires nginx >= 1.3.7
+  ssl_stapling_verify on; # Requires nginx => 1.3.7
+  resolver $DNS-IP-1 $DNS-IP-2 valid=300s;
+  resolver_timeout 5s;
+  add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload";
+  add_header X-Frame-Options DENY;
+  add_header X-Content-Type-Options nosniff;
+{% endif %}
+
+  # Load modular configuration files from the /etc/nginx/conf.d directory.
+  include /etc/nginx/conf.d/*.conf;
+}

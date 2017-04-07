@@ -1,2 +1,4 @@
 ---
-# vars file for nginx
+nginx_gzip_enabled: true
+nginx_ssl_enabled: true
+nginx_dhparam_keysize: 4096
